@@ -41,17 +41,6 @@ class TermBasedRandomSampling(object):
     def setup_library(self):
         stemmerFactory = StemmerFactory()
         self.stemmer = stemmerFactory.create_stemmer()
-    
-    def preprocessing(self,data):
-        for i in range(len(data)):
-            case_folding = data[i].lower()
-            cleaning = re.sub(r'[^a-zA-Z]', " ",case_folding)
-            stemming = self.stemmer.stem(cleaning)
-            tokenizing = [word for word in stemming.split() if word.isalpha()]
-            self.cleaned_data.append(stemming)
-            for word in tokenizing:
-                if word not in self.terms:
-                    self.terms.append(word)
 
     def generate_random_words(self,token):
         return token[randint(0,len(token)-1)]
@@ -100,15 +89,16 @@ class TermBasedRandomSampling(object):
         w_t = p_x * np.log2(p_x/p_c)
         return w_t
 
-    def create_stopwords(self,data):
+    def create_stopwords(self,cleaned_data,terms):
 
         '''
             Parameters:
-            1. data = array of documents
+            1. cleaned_data = array of documents
+            2. terms = array of documents
             ex : ["Lorem ipsum","Dolor sit amet"]
         '''
-
-        self.preprocessing(data)
+        self.cleaned_data = cleaned_data
+        self.terms = terms
         
         # Repeat Y times, where Y is a parameter:
         for i in range(self.Y):

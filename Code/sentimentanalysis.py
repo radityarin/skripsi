@@ -1,4 +1,6 @@
 from tbrs import TermBasedRandomSampling
+import pandas as pd
+from preprocessing import Preprocessing
 
 data = []
 
@@ -12,6 +14,16 @@ data.append("Saya berdoa kuliah tetap daring saja, kampus mau offline padahal te
 data.append("Nilai positif saja yang diambil buang yang negatif. Positifnya (mungkin) ada beberapa mahasiswa yang tidak berani bertanya di kelas jadi lebih aktif bertanya di kuliah online (daring)")
 data.append("Benar juga ya lama lama kuliah online jadi new normal sampai masa pandemi ini selesai juga bisa jadi online, kalau bisa daring kenapa harus kuliah offline")
 
-tbrs = TermBasedRandomSampling(L=10)
-stopwords = tbrs.create_stopwords(data)
-print(stopwords)
+
+# data = pd.read_excel(
+#     r'datasetsoriginal.xlsx')
+# # MENGAMBIL KOLOM KOMENTAR DARI INPUT DOCUMENT
+# data_tweet = inputDocument['Komentar']
+
+prepro = Preprocessing()
+cleaned_data, terms = prepro.preprocessing(data)
+
+tbrs = TermBasedRandomSampling(L=30)
+stopwords = tbrs.create_stopwords(cleaned_data,terms)
+
+new_cleaned_data, new_terms = prepro.remove_stopword(cleaned_data,stopwords)
