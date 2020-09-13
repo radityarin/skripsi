@@ -1,6 +1,7 @@
 from tbrs import TermBasedRandomSampling
 import pandas as pd
 from preprocessing import Preprocessing
+from naivebayes import NaiveBayes
 
 data = []
 
@@ -17,13 +18,25 @@ data.append("Benar juga ya lama lama kuliah online jadi new normal sampai masa p
 
 # data = pd.read_excel(
 #     r'datasetsoriginal.xlsx')
-# # MENGAMBIL KOLOM KOMENTAR DARI INPUT DOCUMENT
-# data_tweet = inputDocument['Komentar']
+# data_tweet = data['Komentar']
 
 prepro = Preprocessing()
 cleaned_data, terms = prepro.preprocessing(data)
+print(cleaned_data)
+print()
+print(terms)
+print()
 
-tbrs = TermBasedRandomSampling(L=30)
+tbrs = TermBasedRandomSampling(L=50,Y=100)
 stopwords = tbrs.create_stopwords(cleaned_data,terms)
+print(stopwords)
+print()
 
 new_cleaned_data, new_terms = prepro.remove_stopword(cleaned_data,stopwords)
+print(new_cleaned_data)
+print()
+print(new_terms)
+nb = NaiveBayes()
+nb.fit(new_cleaned_data,new_terms)
+test = "Nilai positif aja yg diambil buang yg negatif. Positifnya (mungkin) ada beberapa mahasiswa yang gak berani nanya di kelas jadi lebih aktif bertanya di kuliah online(daring)"
+nb.predict(test,True)

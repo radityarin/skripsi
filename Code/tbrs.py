@@ -173,6 +173,7 @@ class TermBasedRandomSampling(object):
 
         stopwords = []
         for k, v in sorted_final_weight.items():
+            print(k + " : "+str(v))
             stopwords.append(k)
 
         return stopwords
