@@ -12,11 +12,18 @@ class Preprocessing(object):
         stemmerFactory = StemmerFactory()
         self.stemmer = stemmerFactory.create_stemmer()
 
-    def preprocessing(self,data):
+    def preprocessing(self,data,stopwords=None):
         for i in range(len(data)):
             case_folding = data[i].lower()
-            cleaning = re.sub(r'[^a-zA-Z]', " ",case_folding)
-            stemming = self.stemmer.stem(cleaning)
+            remove_newline = case_folding.replace("\n"," ")
+            cleaning = re.sub(r'[^a-zA-Z]', " ",remove_newline)
+            if stopwords != None:
+                filtered_words = [word for word in cleaning.split() if word not in stopwords]
+                stemming = self.stemmer.stem(" ".join(filtered_words))
+                print(filtered_words)
+            else:
+                stemming = self.stemmer.stem(cleaning)
+            print(stemming)
             tokenizing = [word for word in stemming.split() if word.isalpha()]
             self.cleaned_data.append(stemming)
             for word in tokenizing:

@@ -9,13 +9,14 @@ class NaiveBayes(object):
         self.terms = []
         self.used_terms = []
         self.cleaned_data = []
-        self.terms_raw_tf = {}
+        self.weighted_terms = {}
         self.used_terms_with_con_prob = {}
         self.total = []
         self.terms_con_prob = {}
-        self.con_prob_positive = []
-        self.con_prob_neutral = []
         self.con_prob_negative = []
+        self.con_prob_neutral = []
+        self.con_prob_positive = []
+        self.target = []
 
     def countWord(self,term,document):
         documentArray = document.split()
@@ -28,30 +29,42 @@ class NaiveBayes(object):
     def countSpecificWordInCategory(self,word,category):
         counter = 0
         indexDocument = 0
-        if category == 'Positif':
-            for tf in self.terms_raw_tf[word]:
-                if indexDocument < 15:
+        print(self.weighted_terms[word])
+        if category == 'Negatif':
+            for tf in self.weighted_terms[word]:
+                if self.target[indexDocument]=="Negatif":
                     counter = counter + tf
                 indexDocument += 1
-        elif category == 'Negatif':
-            for tf in self.terms_raw_tf[word]:
-                if indexDocument >= 15:
+        elif category == 'Netral':
+            for tf in self.weighted_terms[word]:
+                if self.target[indexDocument]=="Netral":
+                    counter = counter + tf
+                indexDocument += 1
+        elif category == 'Positif':
+            for tf in self.weighted_terms[word]:
+                if self.target[indexDocument]=="Positif":
                     counter = counter + tf
                 indexDocument += 1
         return counter
 
     def countAllWordInCategory(self,category):
         counter = 0
-        if category == 'Positif':
+        if category == 'Negatif':
             indexDocument = 0
             for totalTiapDokumen in self.total:
-                if indexDocument < 15:
+                if self.target[indexDocument]=="Negatif":
                     counter = counter + totalTiapDokumen
                 indexDocument += 1
-        elif category == 'Negatif':
+        elif category == 'Netral':
             indexDocument = 0
             for totalTiapDokumen in self.total:
-                if indexDocument >= 15:
+                if self.target[indexDocument]=="Netral":
+                    counter = counter + totalTiapDokumen
+                indexDocument += 1
+        elif category == 'Positif':
+            indexDocument = 0
+            for totalTiapDokumen in self.total:
+                if self.target[indexDocument]=="Positif":
                     counter = counter + totalTiapDokumen
                 indexDocument += 1
         return counter
@@ -59,58 +72,58 @@ class NaiveBayes(object):
     def getTotalTerm(self):
         return len(self.terms)
 
-    def countConditionalProbablility(self,word, category):
+    def calculate_probability_multinomial(self,word, category):
         return (self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.getTotalTerm())
 
-    def fit(self, cleaned_data, terms):
+    def calculate_probability_gaussian(self, x, mean, stdev):
+        exponent = math.exp(-((x - mean) ** 2 / (2 * stdev ** 2)))
+        return (1 / (math.sqrt(2 * math.pi) * stdev)) * exponent
+
+    def fit(self, cleaned_data, terms, weighted_terms, target):
         self.cleaned_data = cleaned_data
         self.terms = terms
-
-        for term in self.terms:
-            temp = []
-            for data in self.cleaned_data:
-                temp.append(self.countWord(term, data))
-            self.terms_raw_tf[term] = temp
+        self.weighted_terms = weighted_terms
+        self.target = target
         
         for i in range(len(self.cleaned_data)):
             total_word = 0
             for term in self.terms:
-                total_word += self.terms_raw_tf[term][i]
+                total_word += self.weighted_terms[term][i]
             self.total.append(total_word)
         
-        self.con_prob_positive = []
-        self.con_prob_negative = []
-
         for term in self.terms:
-            self.con_prob_positive.append(self.countConditionalProbablility(term, 'Positif'))
-            self.con_prob_negative.append(self.countConditionalProbablility(term, 'Negatif'))
-
+            self.con_prob_negative.append(self.calculate_probability_multinomial(term, 'Negatif'))
+            self.con_prob_neutral.append(self.calculate_probability_multinomial(term, 'Netral'))
+            self.con_prob_positive.append(self.calculate_probability_multinomial(term, 'Positif'))
+            
         self.terms_con_prob = {}
         indexKomentar = 0
         for term in self.terms:
             temp = []
-            temp.append(self.con_prob_positive[indexKomentar])
             temp.append(self.con_prob_negative[indexKomentar])
+            temp.append(self.con_prob_neutral[indexKomentar])
+            temp.append(self.con_prob_positive[indexKomentar])
             self.terms_con_prob[term] = temp
+            print(term +","+str(temp))
             indexKomentar += 1
 
     def getTotalDocument(self):
         return len(self.cleaned_data)
 
     def getTotalDocumentWithSpecificCategory(self,category):
-        if category == 'Positif':
-            return int(len(self.cleaned_data)/2)
-        elif category == 'Neutral':
-            return int(len(self.cleaned_data)/2)
-        elif category == 'Negatif':
-            return int(len(self.cleaned_data)/2)
+        if category == 'Negatif':
+            return int(len(self.cleaned_data)/3)
+        elif category == 'Netral':
+            return int(len(self.cleaned_data)/3)
+        elif category == 'Positif':
+            return int(len(self.cleaned_data)/3)
         else:
             return 0
 
     def predict(self,data_test,expected_result):
         prepro = Preprocessing()
         cleaned_data_test, terms_test = prepro.preprocessing([data_test])
-        self.used_terms = []
+
         for term in terms_test:
             if term in self.terms:
                 self.used_terms.append(term)
@@ -119,29 +132,39 @@ class NaiveBayes(object):
             temp = []
             temp.append(self.terms_con_prob[term][0])
             temp.append(self.terms_con_prob[term][1])
+            temp.append(self.terms_con_prob[term][2])
             self.used_terms_with_con_prob[term] = temp
 
-        probabiltyPositif = self.getTotalDocumentWithSpecificCategory(
-            'Positif') / self.getTotalDocument()
         probabiltyNegatif = self.getTotalDocumentWithSpecificCategory(
             'Negatif') / self.getTotalDocument()
+        probabiltyNetral = self.getTotalDocumentWithSpecificCategory(
+            'Netral') / self.getTotalDocument()
+        probabiltyPositif = self.getTotalDocumentWithSpecificCategory(
+            'Positif') / self.getTotalDocument()
 
-        positif = 1
         negatif = 1
+        netral = 1
+        positif = 1
         
         for term in self.used_terms:
-            positif *= self.used_terms_with_con_prob[term][0]
-            negatif *= self.used_terms_with_con_prob[term][1]
+            negatif *= self.used_terms_with_con_prob[term][0]
+            netral *= self.used_terms_with_con_prob[term][1]
+            positif *= self.used_terms_with_con_prob[term][2]
 
-        positif = positif * probabiltyPositif
         negatif = negatif * probabiltyNegatif
-        print()
-        print(positif)
-        print(negatif)
+        netral = netral * probabiltyNetral
+        positif = positif * probabiltyPositif
 
-        finalResult = True if positif > negatif else False
+        finalResult = "" 
+        if (positif > negatif and positif > netral):
+            finalResult = "Positif" 
+        elif negatif > positif and negatif > netral:
+            finalResult = "Negatif" 
+        elif netral > positif and netral > negatif:
+            finalResult = "Netral" 
 
         print()
         print('Komentar yang diuji : ' + data_test)
-        print('Expected Result : ' + ('Positif' if expected_result == True else 'Negatif'))
-        print('Output Result : ' + ('Positif' if finalResult == True else 'Negatif'))
+        print('Expected Result : ' + expected_result)
+        print('Output Result : ' + finalResult)
+ 
