@@ -7,6 +7,7 @@ class Preprocessing(object):
         self.cleaned_data = []
         self.terms = []
         self.setup_library()
+        self.token = []
 
     def setup_library(self):
         stemmerFactory = StemmerFactory()
@@ -20,16 +21,18 @@ class Preprocessing(object):
             if stopwords != None:
                 filtered_words = [word for word in cleaning.split() if word not in stopwords]
                 stemming = self.stemmer.stem(" ".join(filtered_words))
-                print(filtered_words)
             else:
                 stemming = self.stemmer.stem(cleaning)
-            print(stemming)
             tokenizing = [word for word in stemming.split() if word.isalpha()]
             self.cleaned_data.append(stemming)
             for word in tokenizing:
+                self.token.append(word)
                 if word not in self.terms:
                     self.terms.append(word)
         return self.cleaned_data, self.terms
+
+    def get_token(self):
+        return self.token
 
     def remove_stopword(self,cleaned_data,stopwords):
         new_cleaned_data = []

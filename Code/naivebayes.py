@@ -1,8 +1,9 @@
 import re
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from preprocessing import Preprocessing
+from weighting import Weighting
 
-class NaiveBayes(object):
+class NBMultinomial(object):
 
     def __init__(self):
         self.a=[]
@@ -17,6 +18,7 @@ class NaiveBayes(object):
         self.con_prob_neutral = []
         self.con_prob_positive = []
         self.target = []
+        self.stopwords = []
 
     def countWord(self,term,document):
         documentArray = document.split()
@@ -29,7 +31,7 @@ class NaiveBayes(object):
     def countSpecificWordInCategory(self,word,category):
         counter = 0
         indexDocument = 0
-        print(self.weighted_terms[word])
+        # print(self.weighted_terms[word])
         if category == 'Negatif':
             for tf in self.weighted_terms[word]:
                 if self.target[indexDocument]=="Negatif":
@@ -75,16 +77,14 @@ class NaiveBayes(object):
     def calculate_probability_multinomial(self,word, category):
         return (self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.getTotalTerm())
 
-    def calculate_probability_gaussian(self, x, mean, stdev):
-        exponent = math.exp(-((x - mean) ** 2 / (2 * stdev ** 2)))
-        return (1 / (math.sqrt(2 * math.pi) * stdev)) * exponent
-
-    def fit(self, cleaned_data, terms, weighted_terms, target):
+    def fit(self, cleaned_data, terms, target, stopwords):
         self.cleaned_data = cleaned_data
         self.terms = terms
-        self.weighted_terms = weighted_terms
         self.target = target
-        
+        weight = Weighting(self.cleaned_data, self.terms)
+        self.weighted_terms = weight.get_tf_idf_weighting()
+        self.stopwords = stopwords
+
         for i in range(len(self.cleaned_data)):
             total_word = 0
             for term in self.terms:
@@ -104,7 +104,7 @@ class NaiveBayes(object):
             temp.append(self.con_prob_neutral[indexKomentar])
             temp.append(self.con_prob_positive[indexKomentar])
             self.terms_con_prob[term] = temp
-            print(term +","+str(temp))
+            # print(term +","+str(temp))
             indexKomentar += 1
 
     def getTotalDocument(self):
@@ -112,17 +112,17 @@ class NaiveBayes(object):
 
     def getTotalDocumentWithSpecificCategory(self,category):
         if category == 'Negatif':
-            return int(len(self.cleaned_data)/3)
+            return len([tgt for tgt in self.target if tgt == "Negatif"])
         elif category == 'Netral':
-            return int(len(self.cleaned_data)/3)
+            return len([tgt for tgt in self.target if tgt == "Netral"])
         elif category == 'Positif':
-            return int(len(self.cleaned_data)/3)
+            return len([tgt for tgt in self.target if tgt == "Positif"])
         else:
             return 0
 
     def predict(self,data_test,expected_result):
         prepro = Preprocessing()
-        cleaned_data_test, terms_test = prepro.preprocessing([data_test])
+        cleaned_data_test, terms_test = prepro.preprocessing([data_test],self.stopwords)
 
         for term in terms_test:
             if term in self.terms:
@@ -133,6 +133,7 @@ class NaiveBayes(object):
             temp.append(self.terms_con_prob[term][0])
             temp.append(self.terms_con_prob[term][1])
             temp.append(self.terms_con_prob[term][2])
+            # print(term +","+str(temp))
             self.used_terms_with_con_prob[term] = temp
 
         probabiltyNegatif = self.getTotalDocumentWithSpecificCategory(
@@ -141,20 +142,23 @@ class NaiveBayes(object):
             'Netral') / self.getTotalDocument()
         probabiltyPositif = self.getTotalDocumentWithSpecificCategory(
             'Positif') / self.getTotalDocument()
-
+        a = str(probabiltyPositif) + " * "
         negatif = 1
         netral = 1
         positif = 1
-        
         for term in self.used_terms:
+            print(term)
+            a+= str(self.used_terms_with_con_prob[term][2]) + " * "
             negatif *= self.used_terms_with_con_prob[term][0]
             netral *= self.used_terms_with_con_prob[term][1]
             positif *= self.used_terms_with_con_prob[term][2]
-
+        
+        print(a)
+        
         negatif = negatif * probabiltyNegatif
         netral = netral * probabiltyNetral
         positif = positif * probabiltyPositif
-
+        print(str(negatif) + ", " + str(netral) + ", " +str(positif))
         finalResult = "" 
         if (positif > negatif and positif > netral):
             finalResult = "Positif" 
@@ -163,8 +167,10 @@ class NaiveBayes(object):
         elif netral > positif and netral > negatif:
             finalResult = "Netral" 
 
-        print()
         print('Komentar yang diuji : ' + data_test)
         print('Expected Result : ' + expected_result)
         print('Output Result : ' + finalResult)
+        print()
+
+        return finalResult
  
