@@ -133,7 +133,7 @@ class TermBasedRandomSampling(object):
             sorted_term_weight = {}
             count = 0
             for term_weight in sort_term_weight:
-                print(term_weight)
+                # print(term_weight)
                 if count < self.X:
                     sorted_term_weight[term_weight[0]] = term_weight[1]
                 else:

@@ -13,7 +13,7 @@ class NBMultinomial(object):
         self.weighted_terms = {}
         self.used_terms_with_con_prob = {}
         self.total = []
-        self.terms_con_prob = {}
+        self.likelihood = {}
         self.con_prob_negative = []
         self.con_prob_neutral = []
         self.con_prob_positive = []
@@ -34,7 +34,6 @@ class NBMultinomial(object):
     def countSpecificWordInCategory(self,word,category):
         counter = 0
         indexDocument = 0
-        # print(self.weighted_terms[word])
         if category == 'Negatif':
             for tf in self.weighted_terms[word]:
                 if self.target[indexDocument]=="Negatif":
@@ -80,12 +79,15 @@ class NBMultinomial(object):
     def calculate_probability_multinomial(self,word, category):
         return (self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.getTotalTerm())
 
-    def fit(self, cleaned_data, terms, target, stopwords):
+    def fit(self, cleaned_data, terms, target, stopwords, weight = None):
         self.cleaned_data = cleaned_data
         self.terms = terms
         self.target = target
-        weight = Weighting(self.cleaned_data, self.terms)
-        self.weighted_terms = weight.get_tf_idf_weighting()
+        if weight == None:
+            weighting = Weighting(self.cleaned_data, self.terms)
+            self.weighted_terms = weighting.get_tf_idf_weighting()
+        else:
+            self.weighted_terms = weight
         self.stopwords = stopwords
 
         for i in range(len(self.cleaned_data)):
@@ -99,14 +101,14 @@ class NBMultinomial(object):
             self.con_prob_neutral.append(self.calculate_probability_multinomial(term, 'Netral'))
             self.con_prob_positive.append(self.calculate_probability_multinomial(term, 'Positif'))
             
-        self.terms_con_prob = {}
+        self.likelihood = {}
         indexKomentar = 0
         for term in self.terms:
             temp = []
             temp.append(self.con_prob_negative[indexKomentar])
             temp.append(self.con_prob_neutral[indexKomentar])
             temp.append(self.con_prob_positive[indexKomentar])
-            self.terms_con_prob[term] = temp
+            self.likelihood[term] = temp
             # print(term +","+str(temp))
             indexKomentar += 1
 
@@ -141,9 +143,9 @@ class NBMultinomial(object):
 
         for term in self.used_terms:
             temp = []
-            temp.append(self.terms_con_prob[term][0])
-            temp.append(self.terms_con_prob[term][1])
-            temp.append(self.terms_con_prob[term][2])
+            temp.append(self.likelihood[term][0])
+            temp.append(self.likelihood[term][1])
+            temp.append(self.likelihood[term][2])
             # print(term +","+str(temp))
             self.used_terms_with_con_prob[term] = temp
 
