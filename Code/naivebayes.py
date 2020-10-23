@@ -17,6 +17,9 @@ class NBMultinomial(object):
         self.con_prob_negative = []
         self.con_prob_neutral = []
         self.con_prob_positive = []
+        self.prior_negative = []
+        self.prior_neutral = []
+        self.prior_positive = []
         self.target = []
         self.stopwords = []
 
@@ -107,6 +110,14 @@ class NBMultinomial(object):
             # print(term +","+str(temp))
             indexKomentar += 1
 
+        self.prior_negative = self.getTotalDocumentWithSpecificCategory(
+            'Negatif') / self.getTotalDocument()
+        self.prior_neutral = self.getTotalDocumentWithSpecificCategory(
+            'Netral') / self.getTotalDocument()
+        self.prior_positive = self.getTotalDocumentWithSpecificCategory(
+            'Positif') / self.getTotalDocument()
+        
+
     def getTotalDocument(self):
         return len(self.cleaned_data)
 
@@ -123,7 +134,7 @@ class NBMultinomial(object):
     def predict(self,data_test,expected_result):
         prepro = Preprocessing()
         cleaned_data_test, terms_test = prepro.preprocessing([data_test],self.stopwords)
-
+        terms_test = prepro.get_token()
         for term in terms_test:
             if term in self.terms:
                 self.used_terms.append(term)
@@ -136,29 +147,29 @@ class NBMultinomial(object):
             # print(term +","+str(temp))
             self.used_terms_with_con_prob[term] = temp
 
-        probabiltyNegatif = self.getTotalDocumentWithSpecificCategory(
-            'Negatif') / self.getTotalDocument()
-        probabiltyNetral = self.getTotalDocumentWithSpecificCategory(
-            'Netral') / self.getTotalDocument()
-        probabiltyPositif = self.getTotalDocumentWithSpecificCategory(
-            'Positif') / self.getTotalDocument()
-        a = str(probabiltyPositif) + " * "
+        # a = str(probabiltyNegatif) + " * "
+        # b = str(probabiltyNetral) + " * "
+        # c = str(probabiltyPositif) + " * "
         negatif = 1
         netral = 1
         positif = 1
         for term in self.used_terms:
-            print(term)
-            a+= str(self.used_terms_with_con_prob[term][2]) + " * "
+            # print(term)
+            # a+= str(self.used_terms_with_con_prob[term][0]) + " * "
+            # b+= str(self.used_terms_with_con_prob[term][1]) + " * "
+            # c+= str(self.used_terms_with_con_prob[term][2]) + " * "
             negatif *= self.used_terms_with_con_prob[term][0]
             netral *= self.used_terms_with_con_prob[term][1]
             positif *= self.used_terms_with_con_prob[term][2]
         
-        print(a)
+        # print(a)
+        # print(b)
+        # print(c)
         
-        negatif = negatif * probabiltyNegatif
-        netral = netral * probabiltyNetral
-        positif = positif * probabiltyPositif
-        print(str(negatif) + ", " + str(netral) + ", " +str(positif))
+        negatif = negatif * self.prior_negative
+        netral = netral * self.prior_neutral
+        positif = positif * self.prior_positive
+        # print(str(negatif) + ", " + str(netral) + ", " +str(positif))
         finalResult = "" 
         if (positif > negatif and positif > netral):
             finalResult = "Positif" 

@@ -35,7 +35,7 @@ class TermBasedRandomSampling(object):
         self.Y = Y
         self.X = X
         self.L = L
-        self.used_token = []
+        self.token_used = []
         self.token_weight = []
 
     def setup_library(self):
@@ -90,7 +90,6 @@ class TermBasedRandomSampling(object):
         return w_t
 
     def create_stopwords(self,cleaned_data,terms):
-
         '''
             Parameters:
             1. cleaned_data = array of documents
@@ -101,7 +100,7 @@ class TermBasedRandomSampling(object):
         self.terms = terms
         
         # Repeat Y times, where Y is a parameter:
-        for i in range(self.Y):
+        for term_weight in range(self.Y):
             # Randomly choose a term in the lexicon file, we shall call it ωrandom
             w_random = self.generate_random_words(self.terms)
             
@@ -114,8 +113,8 @@ class TermBasedRandomSampling(object):
             token_w = {}
             for word in term_sampled_documents:
                 token_w[word] = self.kl_div(word,sampled_documents)
-                if word not in self.used_token:
-                    self.used_token.append(word)
+                if word not in self.token_used:
+                    self.token_used.append(word)
 
             # Divide each term’s weight by the maximum weight of all terms. As a result, all the weights are controlled within [0,1]. In other words, normalise each weighted term by the maximum weight.
             maximum = max(token_w, key=token_w.get)  
@@ -133,9 +132,10 @@ class TermBasedRandomSampling(object):
             # Extract the top X top-ranked (i.e. least weighted), where X is a param- eter.
             sorted_term_weight = {}
             count = 0
-            for i in sort_term_weight:
+            for term_weight in sort_term_weight:
+                print(term_weight)
                 if count < self.X:
-                    sorted_term_weight[i[0]] = i[1]
+                    sorted_term_weight[term_weight[0]] = term_weight[1]
                 else:
                     break
                 count+=1
@@ -143,7 +143,7 @@ class TermBasedRandomSampling(object):
             self.token_weight.append(sorted_term_weight)
 
         weighted_token = {}
-        for used_tok in self.used_token:
+        for used_tok in self.token_used:
             temp = []
             for tok_w in self.token_weight:
                 if used_tok in tok_w:
@@ -164,9 +164,9 @@ class TermBasedRandomSampling(object):
         # Extract the L top-ranked terms as stopword list for the collection. L is a parameter. Therefore, it is often a good idea to use trial and error.
         sorted_final_weight = {}
         count = 0
-        for i in sorted_merged_weighted_token:
+        for term_weight in sorted_merged_weighted_token:
             if count < self.L:
-                sorted_final_weight[i[0]] = i[1]
+                sorted_final_weight[term_weight[0]] = term_weight[1]
             else:
                 break
             count+=1
