@@ -54,6 +54,7 @@ class Weighting(object):
             df = self.dftCount(self.raw_tf[term])
             idf_value = math.log(len(self.data)/df,10)
             self.idf.append(idf_value)
+        return self.idf
 
     def get_tf_idf_weighting(self):
         self.get_log_tf_weighting()
