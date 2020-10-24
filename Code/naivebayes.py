@@ -11,7 +11,7 @@ class NBMultinomial(object):
         self.used_terms = []
         self.cleaned_data = []
         self.weighted_terms = {}
-        self.used_terms_with_con_prob = {}
+        self.used_terms_with_likelihood = {}
         self.total = []
         self.likelihood = {}
         self.con_prob_negative = []
@@ -147,7 +147,7 @@ class NBMultinomial(object):
             temp.append(self.likelihood[term][1])
             temp.append(self.likelihood[term][2])
             # print(term +","+str(temp))
-            self.used_terms_with_con_prob[term] = temp
+            self.used_terms_with_likelihood[term] = temp
 
         # a = str(probabiltyNegatif) + " * "
         # b = str(probabiltyNetral) + " * "
@@ -157,12 +157,12 @@ class NBMultinomial(object):
         positif = 1
         for term in self.used_terms:
             # print(term)
-            # a+= str(self.used_terms_with_con_prob[term][0]) + " * "
-            # b+= str(self.used_terms_with_con_prob[term][1]) + " * "
-            # c+= str(self.used_terms_with_con_prob[term][2]) + " * "
-            negatif *= self.used_terms_with_con_prob[term][0]
-            netral *= self.used_terms_with_con_prob[term][1]
-            positif *= self.used_terms_with_con_prob[term][2]
+            # a+= str(self.used_terms_with_likelihood[term][0]) + " * "
+            # b+= str(self.used_terms_with_likelihood[term][1]) + " * "
+            # c+= str(self.used_terms_with_likelihood[term][2]) + " * "
+            negatif *= self.used_terms_with_likelihood[term][0]
+            netral *= self.used_terms_with_likelihood[term][1]
+            positif *= self.used_terms_with_likelihood[term][2]
         
         # print(a)
         # print(b)
