@@ -25,25 +25,27 @@ pp = pprint.PrettyPrinter(indent=4)
 
 #     nb.fit(new_cleaned_data,new_terms,data_target)
 #     nb.predict("Rasanya mau berhenti kuliah saja kalau daring begini, seperti bayar cuma cuma, materi dikasih secara online, disuruh baca sendiri tanpa ada yang menjelaskan, berasa otodidak :","Negatif")
-    
-    
+
 ########################################################
 # FIX SKRIPSI TANPA KFOLD
 data = pd.read_excel(
-    r'skripsi.xlsx',"Data Manualisasi")
+    r'Skripsi.xlsx',"Data Manualisasi")
 data_tweet = data['Tweet']
 data_target = data['Klasifikasi']
 # TAHAP PEMBUATAN STOPWORD
 prepro = Preprocessing()
 cleaned_data, terms = prepro.preprocessing(data_tweet)
-tbrs = TermBasedRandomSampling(L=20,Y=50)
+# print(cleaned_data)
+# print(terms)
+tbrs = TermBasedRandomSampling(L=50)
 stopwords = tbrs.create_stopwords(cleaned_data,terms)
+print(stopwords)
 # TAHAP PELATIHAN
-prepro2 = Preprocessing()
-new_cleaned_data, new_terms = prepro2.preprocessing(data_tweet,stopwords)
-weight = Weighting(new_cleaned_data, new_terms)
-tfidf = weight.get_tf_idf_weighting()
-nb = NBMultinomial()
-nb.fit(new_cleaned_data,new_terms,data_target,stopwords,tfidf)
-# TAHAP PENGUJIAN
-nb.predict("Apa saya saja yang merasa kalau selama kuliah daring nyaman banget sampai saya tidak ingin masuk kuliah karena takut panik","Positif")
+# prepro2 = Preprocessing()
+# new_cleaned_data, new_terms = prepro2.preprocessing(data_tweet,stopwords)
+# weight = Weighting(new_cleaned_data, new_terms)
+# tfidf = weight.get_tf_idf_weighting()
+# nb = NBMultinomial()
+# nb.fit(new_cleaned_data,new_terms,data_target,stopwords,tfidf)
+# # TAHAP PENGUJIAN
+# nb.predict("Apa saya saja yang merasa kalau selama kuliah daring nyaman banget sampai saya tidak ingin masuk kuliah karena takut panik","Positif")

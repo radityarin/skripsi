@@ -11,7 +11,7 @@ class TermBasedRandomSampling(object):
         Parameters:
             1. Y (int) = the number of selection step Y times
             2. X (int) = the number of top ranked (least weighted) extraction in every looping
-            3. L (int) = the number of stopwords to build
+            3. L (int) = percentage number of stopwords to build
 
         Algorithm:
             Repeat Y times, where Y is a parameter:
@@ -27,7 +27,7 @@ class TermBasedRandomSampling(object):
             Rank the shrunk array in increasing order depending on the term’s weight. In other words, sort the array in ascending order.
             Extract the L top-ranked terms as stopword list for the collection. L is a parameter. Therefore, it is often a good idea to use trial and error.
     '''
-    def __init__(self, Y = 50, X = 30, L = 200):
+    def __init__(self, Y = 50, X = 30, L = 100):
         self.cleaned_data = []
         self.terms = []
         self.stemmer = None
@@ -80,13 +80,24 @@ class TermBasedRandomSampling(object):
         return float(len(token))
 
     def kl_div(self,word,sampled_documents):
+        # print("kata : " + word)
         tf_x = self.count_words(word,sampled_documents)
         l_x = self.get_sum_of_the_length_document(sampled_documents)
         p_x = tf_x / l_x
+        # print("p_x = tf_x / l_x")
+        # print("p_x = " + str(tf_x) + " / " +  str(l_x))
+        # print("p_x = " + str(p_x))
         F = self.count_words(word,self.cleaned_data)
         token_c = self.get_total_token(self.terms)
         p_c = F / token_c
+        # print("p_c = F / token_c")
+        # print("p_c = " + str(F)+" / " + str(token_c))
+        # print("p_c = " + str(p_c))
         w_t = p_x * np.log2(p_x/p_c)
+        # print("w_t = p_x * np.log2(p_x/p_c)")
+        # print("w_t = " + str(p_x)+" * log2 (" + str(p_x)+"/"+str(p_c))
+        # print("w_t = " + str(w_t))
+        # print("{:.6f}".format(w_t))
         return w_t
 
     def create_stopwords(self,cleaned_data,terms):
@@ -98,44 +109,69 @@ class TermBasedRandomSampling(object):
         '''
         self.cleaned_data = cleaned_data
         self.terms = terms
-        
+        tania = 0
+        # wrandommanualisasi = []
+
+        wrandommanual = ['materi', 'saja', 'selesai', 'dan', 'salah', 'justru', 'sangat', 'diri', 'aku', 'atau', 'sempurna', 'otak', 'uji', 'dan', 'tugas', 'masalah', 'materi', 'benar', 'oke', 'adalah', 'kuliah', 'kenapa', 'kasih', 'pindah', 'mohon', 'henti', 'otak', 'asa', 'masing', 'corona', 'negatif', 'lagi', 'atau', 'tempat', 'rasa', 'padahal', 'jujur', 'salah', 'sangat', 'materi', 'itu', 'buang', 'masih', 'henti', 'maaf', 'di', 'kerja', 'pribadi', 'mau', 'aktif']
         # Repeat Y times, where Y is a parameter:
-        for term_weight in range(self.Y):
+        for i in range(self.Y):
             # Randomly choose a term in the lexicon file, we shall call it ωrandom
-            w_random = self.generate_random_words(self.terms)
+            # if tania == 0 :
+            #     w_random = "materi"
+            # else:
+            #     w_random = self.generate_random_words(self.terms)
+
+            w_random = wrandommanual[i]
+            # wrandommanualisasi.append(w_random)
+            tania+=1
+            print("\nW_random " + w_random)
             
             # Retrieve all the documents in the corpus that contains ωrandom
             sampled_documents = self.get_documents_contains_words(w_random, self.cleaned_data)
-            
+            # print("\nsampled_documents")
+            # print(sampled_documents)
             # Use the refined Kullback-Leibler divergence measure to assign a weight to every term in the retrieved documents. The assigned weight will give us some indication of how important the term is.
             term_sampled_documents = self.get_term(sampled_documents)
+            # print("\nterm_sampled_documents")
+            # print(term_sampled_documents)
 
+            # print("\ncount kldiv")
             token_w = {}
             for word in term_sampled_documents:
                 token_w[word] = self.kl_div(word,sampled_documents)
+                # print(word + " : " + str(token_w[word]))
                 if word not in self.token_used:
                     self.token_used.append(word)
-
+            
             # Divide each term’s weight by the maximum weight of all terms. As a result, all the weights are controlled within [0,1]. In other words, normalise each weighted term by the maximum weight.
             maximum = max(token_w, key=token_w.get)  
             minimum = min(token_w, key=token_w.get)
             max_weight_term = token_w[maximum]
             min_weight_term = token_w[minimum]
+            # print("\nmax " + str(max_weight_term))
+            # print("min " + str(min_weight_term))
 
+            # print("\nnormalized_term_weight")
             normalized_term_weight = {}
             for k,v in token_w.items():
                 normalized_term_weight[k] = ( v - min_weight_term) / (max_weight_term - min_weight_term)
+                # print(k + " = (" + str(v) + " - " + str(min_weight_term)+ ") / (" +  str(max_weight_term)+" - "+str(min_weight_term) + ")")
+                # print(k + " = " + str(normalized_term_weight[k]))
+                # print("{:.6f}".format(normalized_term_weight[k]))
             
             # Rank the weighted terms by their associated weight in ascending order. Since the less informative a term is, the less useful a term is and hence, the more likely it is a stopword.
             sort_term_weight = sorted(normalized_term_weight.items(), key=lambda x: x[1])
 
+            # for k,v in sort_term_weight:
+            #     print("{:.6f}".format(v))
+
             # Extract the top X top-ranked (i.e. least weighted), where X is a param- eter.
             sorted_term_weight = {}
             count = 0
-            for term_weight in sort_term_weight:
+            for i in sort_term_weight:
                 # print(term_weight)
                 if count < self.X:
-                    sorted_term_weight[term_weight[0]] = term_weight[1]
+                    sorted_term_weight[i[0]] = i[1]
                 else:
                     break
                 count+=1
@@ -150,6 +186,10 @@ class TermBasedRandomSampling(object):
                     temp.append(tok_w[used_tok])
             weighted_token[used_tok] = temp
 
+        # for used_tok in self.token_used:
+        #     print(used_tok)
+        #     print(weighted_token[used_tok])
+
         # You now have an array of length X ∗ Y . Each element in the array is associated to a weight.
         # Shrink the array by merging the elements containing the same term and take the average of the term’s associated weights. For example, if the term “retrieval” appears three times in the array and its weights are 0.5, 0.4 and 0.3 respectively, we merge these three elements together into one single one and the weight of the term “retrieval” will become
         # (0.5 + 0.4 + 0.3) / 3 = 0.4
@@ -158,15 +198,37 @@ class TermBasedRandomSampling(object):
             if len(v) != 0:
                 merged_weighted_token[k] = np.mean(v)
         
+        for k,v in merged_weighted_token.items():
+            print(k)
+
+        for k,v in merged_weighted_token.items():
+            if(v!=""):
+                print("{:.6f}".format(v))
+            else:
+                print("0")
+
+             
         # Rank the shrunk array in increasing order depending on the term’s weight. In other words, sort the array in ascending order.
         sorted_merged_weighted_token = sorted(merged_weighted_token.items(), key=lambda x: x[1])
 
+
+
         # Extract the L top-ranked terms as stopword list for the collection. L is a parameter. Therefore, it is often a good idea to use trial and error.
+        
+        for i in sorted_merged_weighted_token:
+            print(i[0])
+
+        for i in sorted_merged_weighted_token:
+            print("{:.6f}".format(i[1]))
+
+        # print("wrandommanualisasi")
+        # print(wrandommanualisasi)
         sorted_final_weight = {}
         count = 0
-        for term_weight in sorted_merged_weighted_token:
-            if count < self.L:
-                sorted_final_weight[term_weight[0]] = term_weight[1]
+        l_value = int(len(sorted_merged_weighted_token) * ( self.L / 100))
+        for i in sorted_merged_weighted_token:
+            if count < l_value:
+                sorted_final_weight[i[0]] = i[1]
             else:
                 break
             count+=1

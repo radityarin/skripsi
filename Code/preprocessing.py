@@ -29,9 +29,10 @@ class Preprocessing(object):
                 # print(stemming)
             else:
                 stemming = self.stemmer.stem(cleaning)
+            # print(stemming)
             self.cleaned_data.append(stemming)
-            # print(tokenizing)
             tokenizing = [word for word in stemming.split() if word.isalpha()]
+            # print(tokenizing)
             for word in tokenizing:
                 self.token.append(word)
                 if word not in self.terms:
