@@ -23,16 +23,19 @@ class Preprocessing(object):
             # print(cleaning)
             # print(cleaning.split())
             if stopwords != None:
-                filtered_words = [word for word in cleaning.split() if word not in stopwords]
+                # filtered_words = [word for word in cleaning.split() if word not in stopwords]
                 # print(filtered_words)
-                stemming = self.stemmer.stem(" ".join(filtered_words))
+                stemming = self.stemmer.stem(cleaning)
+                filtered_words = [word for word in stemming.split() if word not in stopwords]
                 # print(stemming)
+                self.cleaned_data.append(" ".join(filtered_words))
+                tokenizing = [word for word in filtered_words if word.isalpha()]
             else:
                 stemming = self.stemmer.stem(cleaning)
             # print(stemming)
-            self.cleaned_data.append(stemming)
-            tokenizing = [word for word in stemming.split() if word.isalpha()]
-            # print(tokenizing)
+                self.cleaned_data.append(stemming)
+                tokenizing = [word for word in stemming.split() if word.isalpha()]
+            print(tokenizing)
             for word in tokenizing:
                 self.token.append(word)
                 if word not in self.terms:

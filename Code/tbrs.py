@@ -124,7 +124,7 @@ class TermBasedRandomSampling(object):
             w_random = wrandommanual[i]
             # wrandommanualisasi.append(w_random)
             tania+=1
-            print("\nW_random " + w_random)
+            # print("\nW_random " + w_random)
             
             # Retrieve all the documents in the corpus that contains ωrandom
             sampled_documents = self.get_documents_contains_words(w_random, self.cleaned_data)
@@ -198,14 +198,14 @@ class TermBasedRandomSampling(object):
             if len(v) != 0:
                 merged_weighted_token[k] = np.mean(v)
         
-        for k,v in merged_weighted_token.items():
-            print(k)
+        # for k,v in merged_weighted_token.items():
+        #     print(k)
 
-        for k,v in merged_weighted_token.items():
-            if(v!=""):
-                print("{:.6f}".format(v))
-            else:
-                print("0")
+        # for k,v in merged_weighted_token.items():
+        #     if(v!=""):
+        #         print("{:.6f}".format(v))
+        #     else:
+        #         print("0")
 
              
         # Rank the shrunk array in increasing order depending on the term’s weight. In other words, sort the array in ascending order.
@@ -215,11 +215,11 @@ class TermBasedRandomSampling(object):
 
         # Extract the L top-ranked terms as stopword list for the collection. L is a parameter. Therefore, it is often a good idea to use trial and error.
         
-        for i in sorted_merged_weighted_token:
-            print(i[0])
+        # for i in sorted_merged_weighted_token:
+        #     print(i[0])
 
-        for i in sorted_merged_weighted_token:
-            print("{:.6f}".format(i[1]))
+        # for i in sorted_merged_weighted_token:
+        #     print("{:.6f}".format(i[1]))
 
         # print("wrandommanualisasi")
         # print(wrandommanualisasi)
