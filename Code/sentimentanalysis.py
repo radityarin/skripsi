@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from tbrs import TermBasedRandomSampling
 from preprocessing import Preprocessing
-from naivebayes import NBMultinomial
+from naivebayes2 import NBMultinomial
 from weighting import Weighting
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -49,8 +49,9 @@ new_cleaned_data, new_terms = prepro2.preprocessing(data_tweet, stopwords)
 # print(new_terms)
 weight = Weighting(new_cleaned_data, new_terms)
 tfidf = weight.get_tf_idf_weighting()
-pp.pprint(tfidf)
-# nb = NBMultinomial()
-# nb.fit(new_cleaned_data,new_terms,data_target,stopwords,tfidf)
+idf = weight.get_idf()
+# pp.pprint(tfidf)
+nb = NBMultinomial()
+nb.fit(new_cleaned_data,new_terms,data_target,stopwords,idf,tfidf)
 # # TAHAP PENGUJIAN
-# nb.predict("Apa saya saja yang merasa kalau selama kuliah daring nyaman banget sampai saya tidak ingin masuk kuliah karena takut panik","Positif")
+nb.predict("Apa saya saja yang merasa kalau selama kuliah daring nyaman banget sampai saya tidak ingin masuk kuliah karena takut panik","Positif")

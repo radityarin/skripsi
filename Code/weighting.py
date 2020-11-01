@@ -70,6 +70,9 @@ class Weighting(object):
             self.idf.append(idf_value)
         return self.idf
 
+    def get_idf(self):
+        return self.idf
+
     def get_tf_idf_weighting(self):
         self.get_log_tf_weighting()
         self.calculate_idf()
@@ -80,14 +83,14 @@ class Weighting(object):
                 tfidf_value = self.log_tf[term][i]*self.idf[count]
                 temp.append(tfidf_value)
             self.tf_idf[term] = temp
-            buatprint = []
-            buatprint.append(term)
-            for t in temp:
-                if t!= 0 and t!= 1:
-                    formatdulu = "{:.3f}".format(t)
-                else : 
-                    formatdulu = t
-                buatprint.append(str(formatdulu))
-            print(";".join(buatprint))
+            # buatprint = []
+            # buatprint.append(term)
+            # for t in temp:
+            #     if t!= 0 and t!= 1:
+            #         formatdulu = "{:.3f}".format(t)
+            #     else : 
+            #         formatdulu = t
+            #     buatprint.append(str(formatdulu))
+            # print(";".join(buatprint))
             count+=1
         return self.tf_idf
