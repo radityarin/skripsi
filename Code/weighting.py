@@ -37,6 +37,10 @@ class Weighting(object):
             for data in self.data:
                 temp.append(self.countWord(term, data))
             self.raw_tf[term] = temp
+            # buatprint = []
+            # for t in temp:
+            #     buatprint.append(str(t))
+            # print(";".join(buatprint))
         return self.raw_tf
 
     def get_log_tf_weighting(self):
@@ -47,12 +51,22 @@ class Weighting(object):
                 tf = 0 if (self.raw_tf[term])[i] == 0 else 1+math.log((self.raw_tf[term])[i],10)
                 temp.append(tf)
             self.log_tf[term] = temp
+            # buatprint = []
+            # buatprint.append(term)
+            # for t in temp:
+            #     if t!= 0 and t!= 1:
+            #         formatdulu = "{:.3f}".format(t)
+            #     else : 
+            #         formatdulu = t
+            #     buatprint.append(str(formatdulu))
+            # print(";".join(buatprint))
         return self.log_tf
 
     def calculate_idf(self):
         for term in self.terms:
             df = self.dftCount(self.raw_tf[term])
             idf_value = math.log(len(self.data)/df,10)
+            # print(term+";"+str("{:.3f}".format(idf_value)))
             self.idf.append(idf_value)
         return self.idf
 
@@ -66,5 +80,14 @@ class Weighting(object):
                 tfidf_value = self.log_tf[term][i]*self.idf[count]
                 temp.append(tfidf_value)
             self.tf_idf[term] = temp
+            buatprint = []
+            buatprint.append(term)
+            for t in temp:
+                if t!= 0 and t!= 1:
+                    formatdulu = "{:.3f}".format(t)
+                else : 
+                    formatdulu = t
+                buatprint.append(str(formatdulu))
+            print(";".join(buatprint))
             count+=1
         return self.tf_idf
