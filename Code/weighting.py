@@ -38,6 +38,7 @@ class Weighting(object):
                 temp.append(self.countWord(term, data))
             self.raw_tf[term] = temp
             # buatprint = []
+            # buatprint.append(term)
             # for t in temp:
             #     buatprint.append(str(t))
             # print(";".join(buatprint))
@@ -65,6 +66,10 @@ class Weighting(object):
     def calculate_idf(self):
         for term in self.terms:
             df = self.dftCount(self.raw_tf[term])
+            # buatprint = []
+            # buatprint.append(term)
+            # buatprint.append(str(df))
+            # print(";".join(buatprint))
             idf_value = math.log(len(self.data)/df,10)
             # print(term+";"+str("{:.3f}".format(idf_value)))
             self.idf.append(idf_value)

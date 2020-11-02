@@ -83,12 +83,12 @@ class NBMultinomial(object):
         return len(self.terms)
 
     def calculate_probability_multinomial(self,word, category):
-        # print("calculate " + word + " " + category)
-        # print(self.countSpecificWordInCategory(word, category))
-        # print(self.countAllWordInCategory(category))
-        # print(self.get_total_idf())
-        # print((self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.get_total_idf()))
-        # print("==============")
+        print("calculate " + word + " " + category)
+        print(self.countSpecificWordInCategory(word, category))
+        print(self.countAllWordInCategory(category))
+        print(self.get_total_idf())
+        print((self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.get_total_idf()))
+        print("==============")
         return (self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.get_total_idf())
 
     def fit(self, cleaned_data, terms, target, stopwords, idf, weight = None):
