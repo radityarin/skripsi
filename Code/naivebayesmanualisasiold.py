@@ -32,24 +32,24 @@ class NBMultinomial(object):
         return count
 
     def countSpecificWordInCategory(self,word,category):
-        wct = 0
+        counter = 0
         indexDocument = 0
         if category == 'Negatif':
-            for wt in self.weighted_terms[word]:
+            for tf in self.weighted_terms[word]:
                 if self.target[indexDocument]=="Negatif":
-                    wct = wct + wt
+                    counter = counter + tf
                 indexDocument += 1
         elif category == 'Netral':
-            for wt in self.weighted_terms[word]:
+            for tf in self.weighted_terms[word]:
                 if self.target[indexDocument]=="Netral":
-                    wct = wct + wt
+                    counter = counter + tf
                 indexDocument += 1
         elif category == 'Positif':
-            for wt in self.weighted_terms[word]:
+            for tf in self.weighted_terms[word]:
                 if self.target[indexDocument]=="Positif":
-                    wct = wct + wt
+                    counter = counter + tf
                 indexDocument += 1
-        return wct
+        return counter
 
     def countAllWordInCategory(self,category):
         counter = 0
@@ -73,19 +73,18 @@ class NBMultinomial(object):
                 indexDocument += 1
         return counter
 
-    def get_total_idf(self):
-        idf_total = 0
-        for idf_item in self.idf:
-            idf_total+=idf_item
-        return idf_total
-
     def getTotalTerm(self):
         return len(self.terms)
 
     def calculate_probability_multinomial(self,word, category):
-        return (self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.get_total_idf())
+        print("calculate " + word + " " + category)
+        print(self.countSpecificWordInCategory(word, category))
+        print(self.countAllWordInCategory(category))
+        print(self.getTotalTerm())
+        print("==============")
+        return (self.countSpecificWordInCategory(word, category) + 1) / (self.countAllWordInCategory(category) + self.getTotalTerm())
 
-    def fit(self, cleaned_data, terms, target, stopwords, idf, weight = None):
+    def fit(self, cleaned_data, terms, target, stopwords, weight = None):
         self.cleaned_data = cleaned_data
         self.terms = terms
         self.target = target
@@ -94,7 +93,6 @@ class NBMultinomial(object):
             self.weighted_terms = weighting.get_tf_idf_weighting()
         else:
             self.weighted_terms = weight
-            self.idf = idf
         self.stopwords = stopwords
 
         for i in range(len(self.cleaned_data)):
@@ -116,6 +114,7 @@ class NBMultinomial(object):
             temp.append(self.con_prob_neutral[indexKomentar])
             temp.append(self.con_prob_positive[indexKomentar])
             self.likelihood[term] = temp
+            print(term +","+str(temp))
             indexKomentar += 1
 
         self.prior_negative = self.getTotalDocumentWithSpecificCategory(
@@ -152,19 +151,32 @@ class NBMultinomial(object):
             temp.append(self.likelihood[term][0])
             temp.append(self.likelihood[term][1])
             temp.append(self.likelihood[term][2])
+            # print(term +","+str(temp))
             self.used_terms_with_likelihood[term] = temp
 
+        # a = str(probabiltyNegatif) + " * "
+        # b = str(probabiltyNetral) + " * "
+        # c = str(probabiltyPositif) + " * "
         negatif = 1
         netral = 1
         positif = 1
         for term in self.used_terms:
+            # print(term)
+            # a+= str(self.used_terms_with_likelihood[term][0]) + " * "
+            # b+= str(self.used_terms_with_likelihood[term][1]) + " * "
+            # c+= str(self.used_terms_with_likelihood[term][2]) + " * "
             negatif *= self.used_terms_with_likelihood[term][0]
             netral *= self.used_terms_with_likelihood[term][1]
             positif *= self.used_terms_with_likelihood[term][2]
         
+        # print(a)
+        # print(b)
+        # print(c)
+        
         negatif = negatif * self.prior_negative
         netral = netral * self.prior_neutral
         positif = positif * self.prior_positive
+        # print(str(negatif) + ", " + str(netral) + ", " +str(positif))
         finalResult = "" 
         if (positif > negatif and positif > netral):
             finalResult = "Positif" 

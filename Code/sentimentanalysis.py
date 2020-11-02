@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from tbrs import TermBasedRandomSampling
 from preprocessing import Preprocessing
-from naivebayes2 import NBMultinomial
+from naivebayes import NBMultinomial
 from weighting import Weighting
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -32,26 +32,22 @@ data = pd.read_excel(
     r'Skripsi.xlsx',"Data Manualisasi")
 data_tweet = data['Tweet']
 data_target = data['Klasifikasi']
+
 # TAHAP PEMBUATAN STOPWORD
 prepro = Preprocessing()
 cleaned_data, terms = prepro.preprocessing(data_tweet)
-# print(cleaned_data)
-# print(terms)
 tbrs = TermBasedRandomSampling(L=20)
 stopwords = tbrs.create_stopwords(cleaned_data,terms)
-# print("STOPWORDS")
-# print("STOPWORDS " + str(stopwords))
+
 # TAHAP PELATIHAN
-# print()
 prepro2 = Preprocessing()
 new_cleaned_data, new_terms = prepro2.preprocessing(data_tweet, stopwords)
-# print(new_cleaned_data)
-# print(new_terms)
 weight = Weighting(new_cleaned_data, new_terms)
 tfidf = weight.get_tf_idf_weighting()
 idf = weight.get_idf()
-# pp.pprint(tfidf)
+
 nb = NBMultinomial()
 nb.fit(new_cleaned_data,new_terms,data_target,stopwords,idf,tfidf)
-# # TAHAP PENGUJIAN
+
+# TAHAP PENGUJIAN
 nb.predict("Apa saya saja yang merasa kalau selama kuliah daring nyaman banget sampai saya tidak ingin masuk kuliah karena takut panik","Positif")
