@@ -140,6 +140,7 @@ class NBMultinomial(object):
             return 0
 
     def predict(self,data_test,expected_result):
+        self.used_terms = []
         prepro = Preprocessing()
         cleaned_data_test, terms_test = prepro.preprocessing([data_test],self.stopwords)
         terms_test = prepro.get_token()
@@ -161,7 +162,7 @@ class NBMultinomial(object):
             negatif *= self.used_terms_with_likelihood[term][0]
             netral *= self.used_terms_with_likelihood[term][1]
             positif *= self.used_terms_with_likelihood[term][2]
-        
+
         negatif = negatif * self.prior_negative
         netral = netral * self.prior_neutral
         positif = positif * self.prior_positive
@@ -173,12 +174,9 @@ class NBMultinomial(object):
         elif netral > positif and netral > negatif:
             finalResult = "Netral" 
 
-        print(negatif)
-        print(netral)
-        print(positif)
         print('Komentar yang diuji : ' + data_test)
-        print('Expected Result : ' + expected_result)
-        print('Output Result : ' + finalResult)
+        print('Actual : ' + expected_result)
+        print('Predicted : ' + finalResult)
         print()
 
         return finalResult

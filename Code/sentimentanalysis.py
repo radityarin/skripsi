@@ -29,18 +29,19 @@ pp = pprint.PrettyPrinter(indent=4)
 ########################################################
 # FIX SKRIPSI TANPA KFOLD
 data = pd.read_excel(
-    r'Skripsi.xlsx',"Data Manualisasi")
+    r'Skripsi.xlsx',"Data Utama Pilihan (2)")
 data_tweet = data['Tweet']
 data_target = data['Klasifikasi']
 
 # TAHAP PEMBUATAN STOPWORD
 prepro = Preprocessing()
 cleaned_data, terms = prepro.preprocessing(data_tweet)
+print("FIRST PREPRO DONE")
 tbrs = TermBasedRandomSampling(L=20)
 stopwords = tbrs.create_stopwords(cleaned_data,terms)
 # TAHAP PELATIHAN
 prepro2 = Preprocessing()
-new_cleaned_data, new_terms = prepro2.preprocessing(data_tweet, stopwords)
+new_cleaned_data, new_terms = prepro.remove_stopword(cleaned_data, stopwords)
 # print("new_terms")
 # print(new_terms)
 weight = Weighting(new_cleaned_data, new_terms)
@@ -50,7 +51,7 @@ idf = weight.get_idf()
 nb = NBMultinomial()
 nb.fit(new_cleaned_data,new_terms,data_target,stopwords,idf,tfidf)
 # print("stopwords")
-# print(stopwords)
+print(stopwords)
 # TAHAP PENGUJIAN
 nb.predict("Apa saya saja yang merasa kalau selama kuliah daring nyaman banget sampai saya tidak ingin masuk kuliah karena takut panik","Positif")
 nb.predict("Aku merasa lebih leluasa dengan kuliah daring, tidak capek harus siap-siap berangkat. Hanya tinggal makan, beres didepan komputer sudah siap nyimak. Buat materi, selama online emang tidak pernah mengandalkan dosen atau temen. Jadi lebih banyak waktu buat searching sama buka textbook","Positif")

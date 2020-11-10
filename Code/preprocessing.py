@@ -15,6 +15,7 @@ class Preprocessing(object):
 
     def preprocessing(self,data,stopwords=None):
         for i in range(len(data)):
+            # print(i)
             case_folding = data[i].lower()
             # print()
             # print(case_folding)

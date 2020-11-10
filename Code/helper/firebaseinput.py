@@ -20,8 +20,8 @@ def insert_tweet(tweet):
 
 
 data = pd.read_excel(
-    r'/Users/radityarin/Documents/Kuliah/Skripsi/Code/helper/kuliah_daring2.xlsx',"kuliah_daring2")
-data_tweet = data['tweet']
+    r'/Users/radityarin/Documents/Kuliah/Skripsi/Code/helper/dataset_radit.xlsx',"Sheet1")
+data_tweet = data['Tweet']
 # data_target = data['Klasifikasi']
 
 for tweet in data_tweet:
