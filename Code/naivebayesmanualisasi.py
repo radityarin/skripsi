@@ -152,6 +152,7 @@ class NBMultinomial(object):
             return 0
 
     def predict(self,data_test,expected_result):
+        self.used_terms = []
         prepro = Preprocessing()
         cleaned_data_test, terms_test = prepro.preprocessing([data_test],self.stopwords)
         terms_test = prepro.get_token()
