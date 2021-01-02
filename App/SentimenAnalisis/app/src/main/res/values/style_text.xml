@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- textView style red button text -->
+
+    <style name="headline4" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/_27ssp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="headline5" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/_19ssp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="headline6" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/_15ssp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+
+    <style name="subtitle1" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+    <style name="subtitle2" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/_8ssp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+
+    <style name="caption" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/_8ssp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/roboto</item>
+    </style>
+
+    <!-- textView style caption -->
+    <!-- textView style caption -->
+
+
+</resources>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.kelompoksatu.sentimenanalisis.ui.diagnosis.views.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/subtitle1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_margin"
+                android:gravity="center"
+                android:text="Sentimen Analisis mengenai Kuliah Daring di Covid-19"
+                android:textAlignment="center"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etInput"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/layout_margin2"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_marginHorizontal="@dimen/layout_margin2"
+                android:gravity="start"
+                android:hint="Masukan tweet disini"
+                android:padding="@dimen/layout_margin2"
+                android:textSize="@dimen/_12ssp" />
+
+            <Button
+                android:id="@+id/buttonPredict"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/layout_margin2"
+                android:text="Predict"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mcvResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonPredict"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/layout_margin2"
+                    android:layout_marginVertical="@dimen/layout_margin2"
+                    android:padding="@dimen/layout_margin2"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/subtitle1"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_45sdp"
+                            android:gravity="center"
+                            android:text="Stopword\nTerm Based Random Sampling"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/_12ssp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/layout_margin2"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/layout_margin2">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Kelas"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tvKelasTBRS"
+                                style="@style/headline6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Probabilitas"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/subtitle1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Negatif" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/tvNegatifTBRS"
+                                    style="@style/caption"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    tools:text="74%" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/subtitle1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Netral" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/tvNetralTBRS"
+
+                                    style="@style/caption"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    tools:text="74%" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/subtitle1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Positif" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/tvPositifTBRS"
+                                    style="@style/caption"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    tools:text="74%" />
+                            </RelativeLayout>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Stopwords"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tvStopwordsTBRS"
+                                style="@style/caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Kata yang tersaring"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tvFilteredWordsTBRS"
+                                style="@style/caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Kata yang digunakan dalam prediksi"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tvUsedWordsTBRS"
+                                style="@style/caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/layout_margin2"
+                    android:layout_marginVertical="@dimen/layout_margin2"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/subtitle1"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_45sdp"
+                            android:gravity="center"
+                            android:text="Stopword\nTala"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/layout_margin2"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/layout_margin2">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Kelas"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tvKelasTala"
+                                style="@style/headline6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Probabilitas"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/subtitle1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Negatif" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/tvNegatifTala"
+
+                                    style="@style/caption"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    tools:text="74%" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/subtitle1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Netral" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/tvNetralTala"
+
+                                    style="@style/caption"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    tools:text="74%" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/subtitle1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Positif" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    android:id="@+id/tvPositifTala"
+                                    style="@style/caption"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    tools:text="74%" />
+                            </RelativeLayout>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Stopwords"
+                                android:textStyle="bold" />
+
+                            <com.skyhope.showmoretextview.ShowMoreTextView
+                                android:id="@+id/tvStopwordsTala"
+                                style="@style/caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Kata yang tersaring"
+                                android:textStyle="bold" />
+
+                            <com.skyhope.showmoretextview.ShowMoreTextView
+                                android:id="@+id/tvFilteredWordsTala"
+                                style="@style/caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/subtitle1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/layout_margin2"
+                                android:text="Kata yang digunakan dalam prediksi"
+                                android:textStyle="bold" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/tvUsedWordsTala"
+                                style="@style/caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Kutu Loncat" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -139,7 +139,7 @@ class NBMultinomial(object):
         else:
             return 0
 
-    def predict(self,data_test,expected_result):
+    def predict(self,data_test):
         self.used_terms = []
         prepro = Preprocessing()
         cleaned_data_test, terms_test = prepro.preprocessing([data_test],self.stopwords)
@@ -179,5 +179,5 @@ class NBMultinomial(object):
         # print('Predicted : ' + finalResult)
         # print()
 
-        return finalResult
+        return finalResult, negatif, netral, positif
  

@@ -1,31 +1,31 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from tbrs import TermBasedRandomSampling
 from preprocessing import Preprocessing
 from naivebayes import NBMultinomial
 from weighting import Weighting
 from kfold import KFold
-import time
-from sklearn.metrics import precision_recall_fscore_support as score
+from confusionmatrix import ConfusionMatrix
 
 data = pd.read_excel(
-    r'Skripsi.xlsx',"Data Coding Latihan")
+    r'C:\Users\PPATK\Desktop\Code 2\Code\Skripsi.xlsx',"Data Coding")
 data_tweet = data['Tweet']
 data_target = data['Label']
 
-kfold = KFold(data_tweet,data_target,5)
+kfold = KFold(data_tweet,data_target,10)
 data_train, data_test = kfold.get_data_sequence()
 
 x_array = []
 y_array = []
 l_array = []
-accuracy_per_fold_per_xyl_combination = []
-accuracy_total_per_xyl_combination = []
-precision_per_fold_per_xyl_combination = []
-recall_per_fold_per_xyl_combination = []
-fmeasure_per_fold_per_xyl_combination = []
-
-start = time.time()
+kfold_per_combination = []
+list_acc = []
+list_prec = []
+list_recall = []
+list_fmeasure = []
+fold_accuracy = []
+fold_precision = []
+fold_recall = []
+fold_fmeasure = []
 
 count=1
 for l in range(10,60,10):
@@ -37,24 +37,29 @@ for l in range(10,60,10):
             x_array.append(x)
             y_array.append(y)
             l_array.append(l)
+            for i in range(9):
+                x_array.append(" ")
+                y_array.append(" ")
+                l_array.append(" ")                
 
             accuracy_total_accumulation = 0
-            accuracy_per_fold = []
-            precision_per_fold = []
-            recall_per_fold = []
-            fmeasure_per_fold = []
-            for i in range(5):
+            precision_total_accumulation = 0
+            recall_total_accumulation = 0
+            fmeasure_total_accumulation = 0
+
+            for i in range(len(data_train)):
+                kfold_per_combination.append(i+1)
                 y_test = []
                 y_pred = []
-                # TAHAP PEMBUATAN STOPWORD
+
                 prepro = Preprocessing()
                 cleaned_data, terms = prepro.preprocessing(data_train[i]["tweet"])
                 
                 tbrs = TermBasedRandomSampling(X=x, Y=y, L=l)
                 stopwords = tbrs.create_stopwords(cleaned_data,terms)
 
-                # TAHAP PELATIHAN
-                new_cleaned_data, new_terms = prepro.remove_stopword(cleaned_data, stopwords)
+                prepro2 = Preprocessing()
+                new_cleaned_data, new_terms = prepro2.remove_stopword(cleaned_data, stopwords)
 
                 weight = Weighting(new_cleaned_data, new_terms)
                 tfidf = weight.get_tf_idf_weighting()
@@ -63,38 +68,37 @@ for l in range(10,60,10):
                 nb = NBMultinomial()
                 nb.fit(new_cleaned_data,new_terms,data_train[i]["target"],stopwords,idf,tfidf)
                 
-                correct_ans = 0
                 for j in range(len(data_test[i]["tweet"])):
                     prediction = nb.predict(data_test[i]["tweet"][j],data_test[i]["target"][j])
                     y_test.append(data_test[i]["target"][j])
                     y_pred.append(prediction)
-                    if prediction == data_test[i]["target"][j]:
-                        correct_ans+=1
 
-                accuracy = (float(correct_ans) / len(data_test[i]["tweet"])) * 100
-                accuracy_per_fold.append(accuracy)
+                cm = ConfusionMatrix()
+                accuracy, precision, recall, fmeasure = cm.score(y_test, y_pred)
+                list_acc.append(accuracy)
+                list_prec.append(precision)
+                list_recall.append(recall)
+                list_fmeasure.append(fmeasure)
+
                 accuracy_total_accumulation+=accuracy
+                precision_total_accumulation+=precision
+                recall_total_accumulation+=recall
+                fmeasure_total_accumulation+=fmeasure
 
-                precision, recall, fscore, support = score(y_test, y_pred, labels=["Negatif", "Netral", "Positif"])
-                precision_per_fold.append(precision)
-                recall_per_fold.append(recall)
-                fmeasure_per_fold.append(fscore)
+            accuracy_total = float(accuracy_total_accumulation/len(data_train))
+            precision_total = float(precision_total_accumulation/len(data_train))
+            recall_total = float(recall_total_accumulation/len(data_train))
+            fmeasure_total = float(fmeasure_total_accumulation/len(data_train))
+            for i in range(len(data_train)):
+                fold_accuracy.append(accuracy_total)
+                fold_precision.append(precision_total)
+                fold_recall.append(recall_total)
+                fold_fmeasure.append(fmeasure_total)
+    #         if count >= 2:
+    #             break
+    #     break
+    # break
 
-            accuracy_per_fold_per_xyl_combination.append(accuracy_per_fold)
-            precision_per_fold_per_xyl_combination.append(precision_per_fold)
-            recall_per_fold_per_xyl_combination.append(recall_per_fold)
-            fmeasure_per_fold_per_xyl_combination.append(fmeasure_per_fold)
-            accuracy_total = float(accuracy_total_accumulation/len(accuracy_per_fold))
-            accuracy_total_per_xyl_combination.append(accuracy_total)
-            end = time.time()
-
-            print("Accuracy Total : "+str(accuracy_total))
-            print(str(count) + " combination time : " + str(end - start))
-            break
-        break
-    break
-
-df = pd.DataFrame({'X':x_array,'Y':y_array,'L':l_array,'Accuracy per Fold':accuracy_per_fold_per_xyl_combination,'Precision per Fold':precision_per_fold_per_xyl_combination,'Recall per Fold':recall_per_fold_per_xyl_combination,'F-Measure per Fold':fmeasure_per_fold_per_xyl_combination,'Accuracy':accuracy_total_per_xyl_combination})
+df = pd.DataFrame({'X':x_array,'Y':y_array,'L':l_array,'K-Fold':kfold_per_combination,'Accuracy':list_acc,'Precision':list_prec,'Recall':list_recall,'F-Measure':list_fmeasure,'Fold Accuracy':fold_accuracy,'Fold Precision':fold_precision,'Fold Recall':fold_recall,'Fold F-Measure':fold_fmeasure})
 print(df)
-
-df.to_excel(r'/Users/radityarin/Documents/Kuliah/Skripsi/Code/results.xlsx', index = False, header=True)
+df.to_excel(r'cobabarunih.xlsx', index = False, header=True)

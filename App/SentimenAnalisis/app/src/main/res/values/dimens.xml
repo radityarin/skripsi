@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="button_min_height">@dimen/_38sdp</dimen>
+    <dimen name="button_min_height4">@dimen/_22sdp</dimen>
+
+    <dimen name="small_corner_radius">@dimen/_6sdp</dimen>
+    <dimen name="large_corner_radius">@dimen/_16sdp</dimen>
+
+    <dimen name="button_1_text_size">@dimen/_14ssp</dimen>
+    <dimen name="layout_margin">@dimen/_24sdp</dimen>
+    <dimen name="layout_margin2">@dimen/_12sdp</dimen>
+    <dimen name="layout_margin3">@dimen/_6sdp</dimen>
+
+</resources>
