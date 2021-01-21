@@ -15,31 +15,18 @@ class Preprocessing(object):
 
     def preprocessing(self,data,stopwords=None):
         for i in range(len(data)):
-            # print(i)
             case_folding = data[i].lower()
-            # print()
-            # print(case_folding)
             remove_newline = case_folding.replace("\n"," ")
             cleaning = re.sub(r'[^a-zA-Z]', " ",remove_newline)
-            # print(cleaning)
-            # print(cleaning.split())
             if stopwords != None:
-                # print("stopwords")
-                # print(stopwords)
-                # filtered_words = [word for word in cleaning.split() if word not in stopwords]
-                # print(filtered_words)
                 stemming = self.stemmer.stem(cleaning)
                 filtered_words = [word for word in stemming.split() if word not in stopwords]
-                # print(stemming)
                 self.cleaned_data.append(" ".join(filtered_words))
                 tokenizing = [word for word in filtered_words if word.isalpha()]
             else:
                 stemming = self.stemmer.stem(cleaning)
-                # print(stemming)
                 self.cleaned_data.append(stemming)
                 tokenizing = [word for word in stemming.split() if word.isalpha()]
-            # print("\n")
-            # print(tokenizing)
             for word in tokenizing:
                 self.token.append(word)
                 if word not in self.terms:

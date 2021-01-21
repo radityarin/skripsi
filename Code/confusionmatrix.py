@@ -125,11 +125,10 @@ class ConfusionMatrix(object):
 # predicted = ["Positif", "Negatif", "Negatif", "Negatif", "Netral"]
 
 # cm = ConfusionMatrix()
-# accuracy, accuracy_each_class, precision_each_class, recall_each_class, fmeasure_each_class = cm.score(actual, predicted)
+# accuracy, precision, recall, fmeasure = cm.score(actual, predicted)
 # print(cm.get_confusion_matrix())
 
 # print("Accuracy             : {}".format(accuracy))
-# print("Accuracy Each Class  : {}".format(accuracy_each_class))
-# print("Precision Each Class : {}".format(precision_each_class))
-# print("Recall Each Class    : {}".format(recall_each_class))
-# print("FMeasure Each Class  : {}".format(fmeasure_each_class))
+# print("precision            : {}".format(precision))
+# print("recall               : {}".format(recall))
+# print("fmeasure             : {}".format(fmeasure))

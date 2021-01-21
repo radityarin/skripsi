@@ -174,10 +174,5 @@ class NBMultinomial(object):
         elif netral > positif and netral > negatif:
             finalResult = "Netral" 
 
-        # print('Komentar yang diuji : ' + data_test)
-        # print('Actual : ' + expected_result)
-        # print('Predicted : ' + finalResult)
-        # print()
-
-        return finalResult, negatif, netral, positif
+        return finalResult
  

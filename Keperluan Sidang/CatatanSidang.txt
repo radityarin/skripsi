@@ -1,0 +1,25 @@
+1. Validasi Data, sebaiknya pakar bahasa indonesia yang melabeli
+2. Abstrak, jelaskan X, Y , L beri semacam pendahuluan
+3. Pendahuluan TBRS diakhir latar belakang terkait parameter X, Y, L
+
+Rumusan Masalah
+1. Bagaimana parameter terbaik
+2. Bagaimana hasil perbandingan TBRS dengan tanpa stopword pada analisis sentimen
+3. Bagimana hasil perbandingan TBRS dengan Tala
+Tujuan dan Manfaat disesuaikan
+
+Batasan Masalah tambah pakar
+
+Diagram alir utama bisa dijadikan satu
+
+Perhatikan for pada flowchart
+
+Tambah loop X, Y, dan L di diagram flow chart
+
+Tunjukkan titik tertinggi di grafik (fluktuasi)
+
+Abstrak diharuskan lebih menjurus tidak ngalor ngidul,
+fokus mengarah ke stopword dan naive bayes
+
+Kenapa naive bayes perlu stopword
+KFold seharusnya jika k = 10 maka menggunakan 90:10 dan 
