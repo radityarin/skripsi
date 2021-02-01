@@ -127,22 +127,3 @@ class KFold(object):
             data_test_end_index += data_test_size
 
         return data_train, data_test
-
-
-# data = pd.read_excel(
-#     r'Skripsi.xlsx', "Data Coding Latihan")
-# data_tweet = data['Tweet']
-# data_target = data['Label']
-
-# kfold = KFold(data_tweet, data_target, 10)
-# data_train, data_test = kfold.get_data_sequence()
-# print(data_train[2])
-# print(data_test[2])
-# print(len(data_train))
-# for i in range(len(data_test)):
-#     print("\n ==== FOLD " + str(i+1) + " ==== ")
-#     print("TRAIN")
-#     pp.pprint(data_train[i])
-#     print("\nTEST")
-#     pp.pprint(data_test[i])
-#     input()

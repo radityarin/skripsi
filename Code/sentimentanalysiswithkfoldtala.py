@@ -40,8 +40,6 @@ fold = list(range (1,11))
 
 for i in range(len(data_train)):
     print("Fold ke " + str(i+1))
-    # print(len(data_train[i]["tweet"]))
-    # print(len(data_test[i]["tweet"]))
     y_test = []
     y_pred = []
     # TAHAP PEMBUATAN STOPWORD

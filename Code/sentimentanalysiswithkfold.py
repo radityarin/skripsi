@@ -102,12 +102,7 @@ for l in range(10,60,10):
                 fold_precision.append(precision_total)
                 fold_recall.append(recall_total)
                 fold_fmeasure.append(fmeasure_total)
-    #         break
-    #         if count >= 2:
-    #             break
-    #     break
-    # break
 
 df = pd.DataFrame({'X':x_array,'Y':y_array,'L':l_array,'K-Fold':kfold_per_combination,'Accuracy':list_acc,'Precision':list_prec,'Recall':list_recall,'F-Measure':list_fmeasure,'Fold Accuracy':fold_accuracy,'Fold Precision':fold_precision,'Fold Recall':fold_recall,'Fold F-Measure':fold_fmeasure})
 print(df)
-# df.to_excel(r'cobabarunih.xlsx', index = False, header=True)
+df.to_excel(r'output.xlsx', index = False, header=True)
